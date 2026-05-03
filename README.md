@@ -1,3 +1,5 @@
+[한국어 README 보기](README.ko.md)
+
 # Codex Usage Tracker
 
 A Stream Deck plugin that shows your local Codex usage limits on a key. It displays both the 5-hour and weekly usage windows, plus plan and reset details.
