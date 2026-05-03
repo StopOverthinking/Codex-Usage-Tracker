@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "build": "npm run typecheck && node scripts/build.mjs",
+    "check:render": "node scripts/check-render-integrity.mjs",
     "typecheck": "tsc --noEmit",
     "validate": "npm run build && streamdeck validate com.codexusage.tracker.sdPlugin --no-update-check",
     "pack": "npm run build && streamdeck pack com.codexusage.tracker.sdPlugin -f -o dist --no-update-check",

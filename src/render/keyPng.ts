@@ -89,7 +89,7 @@ function baseCanvas(background: string): PngCanvas {
 
 function drawHeader(canvas: PngCanvas): void {
   canvas.text("CODEX", 72, 8, 2, COLORS.text, "center");
-  canvas.roundedRect(52, 28, 40, 4, 2, COLORS.blue);
+  drawStableBar(canvas, 52, 28, 40, 4, COLORS.blue);
 }
 
 function drawRefreshMark(canvas: PngCanvas): void {
@@ -122,15 +122,46 @@ function drawWeeklyDetailRow(canvas: PngCanvas, x: number, y: number, value: str
 
 function drawMeter(canvas: PngCanvas, x: number, y: number, width: number, height: number, percent: number, color: string): void {
   const safePercent = Math.max(0, Math.min(100, percent));
-  const trackY = y + Math.floor(height / 2);
-  const filledWidth = snapToGrid(Math.max(height, Math.round(width * safePercent / 100)));
-  canvas.rect(x, trackY, width, 2, COLORS.text);
-  if (safePercent > 0) canvas.roundedRect(x, y, filledWidth, height, height / 2, color);
+  const barX = snapToGrid(x);
+  const barY = snapToGrid(y);
+  const barWidth = snapToGrid(width);
+  const barHeight = snapToGrid(height);
+  const trackY = barY + Math.floor(barHeight / 2);
+
+  if (safePercent <= 0) {
+    drawTrackSegment(canvas, barX, trackY, barWidth);
+    return;
+  }
+
+  const filledWidth = safePercent >= 100 ? barWidth : snapToGrid(Math.max(barHeight, Math.round(barWidth * safePercent / 100)));
+  drawStableBar(canvas, barX, barY, filledWidth, barHeight, color);
+  drawTrackSegment(canvas, barX + filledWidth, trackY, barWidth - filledWidth);
 }
 
 function drawAlertIndicator(canvas: PngCanvas, sessionPercent: number | null, weeklyPercent: number | null, message?: string): void {
   const alert = alertColor(sessionPercent, weeklyPercent, message);
-  if (alert) canvas.roundedRect(52, 28, 40, 4, 2, alert);
+  if (alert) drawStableBar(canvas, 52, 28, 40, 4, alert);
+}
+
+function drawStableBar(canvas: PngCanvas, x: number, y: number, width: number, height: number, color: string): void {
+  const barX = snapToGrid(x);
+  const barY = snapToGrid(y);
+  const barWidth = Math.max(0, snapToGrid(width));
+  const barHeight = Math.max(2, snapToGrid(height));
+  if (barWidth <= 0) return;
+
+  if (barHeight <= 4) {
+    canvas.rect(barX, barY, barWidth, barHeight, color);
+    return;
+  }
+
+  canvas.roundedRect(barX, barY, barWidth, barHeight, barHeight / 2, color);
+}
+
+function drawTrackSegment(canvas: PngCanvas, x: number, y: number, width: number): void {
+  const segmentWidth = Math.max(0, snapToGrid(width));
+  if (segmentWidth <= 0) return;
+  canvas.rect(snapToGrid(x), snapToGrid(y), segmentWidth, 2, COLORS.text);
 }
 
 function drawFittedText(

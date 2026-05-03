@@ -93,7 +93,9 @@ export class PngCanvas {
     if (isPixelGridAligned(x, y, width, height, safeRadius)) {
       for (let py = y0; py < y1; py += TEXT_PIXEL_GRID) {
         for (let px = x0; px < x1; px += TEXT_PIXEL_GRID) {
-          if (roundedRectContains(px, py, x, y, width, height, safeRadius)) this.#pixelBlock(px, py, TEXT_PIXEL_GRID, rgba);
+          if (roundedRectContainsPoint(px + TEXT_PIXEL_GRID / 2, py + TEXT_PIXEL_GRID / 2, x, y, width, height, safeRadius)) {
+            this.#pixelBlock(px, py, TEXT_PIXEL_GRID, rgba);
+          }
         }
       }
       return;
@@ -101,7 +103,7 @@ export class PngCanvas {
 
     for (let py = y0; py < y1; py += 1) {
       for (let px = x0; px < x1; px += 1) {
-        if (roundedRectContains(px, py, x, y, width, height, safeRadius)) this.#pixel(px, py, rgba);
+        if (roundedRectContainsPoint(px + 0.5, py + 0.5, x, y, width, height, safeRadius)) this.#pixel(px, py, rgba);
       }
     }
   }
@@ -204,9 +206,21 @@ function isPixelGridAligned(...values: number[]): boolean {
   return values.every((value) => Number.isInteger(value) && value % TEXT_PIXEL_GRID === 0);
 }
 
-function roundedRectContains(px: number, py: number, x: number, y: number, width: number, height: number, radius: number): boolean {
-  const dx = px < x + radius ? x + radius - px : px >= x + width - radius ? px - (x + width - radius - 1) : 0;
-  const dy = py < y + radius ? y + radius - py : py >= y + height - radius ? py - (y + height - radius - 1) : 0;
+function roundedRectContainsPoint(
+  sampleX: number,
+  sampleY: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number
+): boolean {
+  const left = x + radius;
+  const right = x + width - radius;
+  const top = y + radius;
+  const bottom = y + height - radius;
+  const dx = sampleX < left ? left - sampleX : sampleX > right ? sampleX - right : 0;
+  const dy = sampleY < top ? top - sampleY : sampleY > bottom ? sampleY - bottom : 0;
   return dx * dx + dy * dy <= radius * radius;
 }
 
