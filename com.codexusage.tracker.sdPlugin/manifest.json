@@ -1,0 +1,49 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "Name": "Codex Usage",
+  "Version": "0.1.0.0",
+  "Author": "Codex Usage Tracker",
+  "Actions": [
+    {
+      "Name": "Codex Overview",
+      "UUID": "com.codexusage.tracker.overview",
+      "Icon": "imgs/actions/overview/icon",
+      "Tooltip": "Shows Codex 5-hour and weekly remaining usage, plan, and reset times.",
+      "PropertyInspectorPath": "ui/property-inspector.html",
+      "Controllers": [
+        "Keypad"
+      ],
+      "DisableCaching": true,
+      "SupportedInMultiActions": false,
+      "States": [
+        {
+          "Image": "imgs/actions/overview/key",
+          "TitleAlignment": "middle"
+        }
+      ]
+    }
+  ],
+  "Category": "Codex Usage",
+  "CategoryIcon": "imgs/plugin/category-icon",
+  "CodePath": "bin/plugin.js",
+  "Description": "Display local Codex 5-hour and weekly remaining usage, plan, and reset times on a Stream Deck key.",
+  "Icon": "imgs/plugin/marketplace",
+  "SDKVersion": 3,
+  "Software": {
+    "MinimumVersion": "7.1"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "12"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20"
+  },
+  "UUID": "com.codexusage.tracker"
+}

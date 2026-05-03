@@ -1,0 +1,10 @@
+node_modules/
+dist/
+logs/
+*.streamDeckPlugin
+com.trudy.codex-usage.sdPlugin/
+com.codexusage.tracker.sdPlugin/logs/
+com.codexusage.tracker.sdPlugin/bin/plugin.js
+com.codexusage.tracker.sdPlugin/bin/plugin.js.map
+com.codexusage.tracker.sdPlugin/bin/package.json
+.codex-plugin-cache/
