@@ -100,6 +100,38 @@ async function findOnPath(): Promise<Candidate[]> {
 }
 
 async function findWindowsAppsPackages(): Promise<Candidate[]> {
+  const appxCandidates = await findWindowsAppsPackagesViaAppx();
+  const directoryCandidates = await findWindowsAppsPackagesViaDirectory();
+  return [...appxCandidates, ...directoryCandidates];
+}
+
+async function findWindowsAppsPackagesViaAppx(): Promise<Candidate[]> {
+  const command = "powershell.exe";
+  const args = [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-Command",
+    "$ErrorActionPreference = 'Stop'; Get-AppxPackage -Name OpenAI.Codex | Sort-Object Version -Descending | ForEach-Object { $_.InstallLocation }"
+  ];
+
+  try {
+    const { stdout } = await execFileAsync(command, args, { timeout: 5000, windowsHide: true });
+    return stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((installLocation) => ({
+        path: path.join(installLocation, "app", "resources", "codex.exe"),
+        source: "appx-package"
+      }));
+  } catch {
+    return [];
+  }
+}
+
+async function findWindowsAppsPackagesViaDirectory(): Promise<Candidate[]> {
   const root = "C:\\Program Files\\WindowsApps";
   try {
     const entries = await readdir(root, { withFileTypes: true });
